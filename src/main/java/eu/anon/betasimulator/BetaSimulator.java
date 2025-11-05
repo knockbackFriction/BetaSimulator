@@ -1,7 +1,6 @@
 package eu.anon.betasimulator;
 
-import eu.anon.betasimulator.mobs.MobLoot;
-import org.bukkit.Location;
+import eu.anon.betasimulator.mobs.*;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -12,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -20,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class BetaSimulator extends JavaPlugin implements Listener {
@@ -36,6 +33,7 @@ public final class BetaSimulator extends JavaPlugin implements Listener {
         // Plugin startup logic
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new MobLoot(), this);
+        getServer().getPluginManager().registerEvents(new MobReplacement(), this);
         getServer().getPluginManager().registerEvents(new RightClicking(), this);
         getServer().getPluginManager().registerEvents(new Knockback(), this);
         getServer().getPluginManager().registerEvents(new CraftingManager(), this);
@@ -126,30 +124,6 @@ public final class BetaSimulator extends JavaPlugin implements Listener {
             sheep.setSheared(true);
             ItemStack wools = new ItemStack(Material.WOOL, ThreadLocalRandom.current().nextInt(1,4), sheep.getColor().getWoolData());
             sheep.getWorld().dropItem(sheep.getLocation(), wools);
-        }
-    }
-
-    EntityType[] replacementHostiles = {EntityType.ZOMBIE, EntityType.SKELETON, EntityType.SPIDER, EntityType.CREEPER};
-    EntityType[] replacementPassives = {EntityType.PIG, EntityType.SHEEP, EntityType.COW, EntityType.CHICKEN};
-
-    @EventHandler
-    public void onEntitySpawn(EntitySpawnEvent event) {
-        if (event.getEntityType() == EntityType.ENDERMAN
-                || event.getEntityType() == EntityType.HUSK
-                || event.getEntityType() == EntityType.STRAY
-                || event.getEntityType() == EntityType.WITCH) {
-            Location loc = event.getLocation();
-            event.setCancelled(true);
-            loc.getWorld().spawnEntity(loc, replacementHostiles[new Random().nextInt(replacementHostiles.length)] );
-        } else if (event.getEntityType() == EntityType.MULE
-                || event.getEntityType() == EntityType.DONKEY
-                || event.getEntityType() == EntityType.PARROT
-                || event.getEntityType() == EntityType.HORSE) {
-            Location loc = event.getLocation();
-            event.setCancelled(true);
-            loc.getWorld().spawnEntity(loc, replacementPassives[new Random().nextInt(replacementPassives.length)] );
-        } else if (event.getEntityType() == EntityType.BAT) {
-            event.setCancelled(true);
         }
     }
 }
