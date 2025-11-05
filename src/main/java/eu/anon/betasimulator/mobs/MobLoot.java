@@ -18,7 +18,7 @@ public class MobLoot implements Listener {
     public void onEntityDeath(EntityDeathEvent event) {
         event.setDroppedExp(0);
 
-        if (event.getEntityType()==EntityType.CREEPER || event.getEntityType()==EntityType.SQUID || event.getEntityType()==EntityType.SLIME) {
+        if (event.getEntityType()==EntityType.SQUID || event.getEntityType()==EntityType.SLIME) {
             return;
         }
         event.getDrops().clear();
@@ -40,6 +40,7 @@ public class MobLoot implements Listener {
             case SPIDER:
                 event.getDrops().add(new ItemStack(Material.STRING, ThreadLocalRandom.current().nextInt(0, 3)));
                 break;
+            case CREEPER:
             case GHAST:
                 event.getDrops().add(new ItemStack(Material.SULPHUR, ThreadLocalRandom.current().nextInt(0,3)));
                 break;

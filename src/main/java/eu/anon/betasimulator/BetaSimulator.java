@@ -110,10 +110,16 @@ public final class BetaSimulator extends JavaPlugin implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Material mat = event.getBlock().getType();
-        if (mat == Material.WOOD_STEP) {
-            event.getBlock().setData((byte) 0);
+        switch (mat) {
+            case WOOD_STEP:
+                event.getBlock().setData((byte) 0);
+                break;
+            case STEP:
+                byte dataValue = event.getBlock().getData();
+                if (dataValue > 3) {
+                    event.getBlock().setData((byte) (dataValue % 4));
+                }
         }
-        //I need to do other slabs too
     }
 
     @EventHandler
@@ -122,8 +128,12 @@ public final class BetaSimulator extends JavaPlugin implements Listener {
             Sheep sheep = (Sheep) event.getEntity();
             if (sheep.isSheared()) return;
             sheep.setSheared(true);
-            ItemStack wools = new ItemStack(Material.WOOL, ThreadLocalRandom.current().nextInt(1,4), sheep.getColor().getWoolData());
-            sheep.getWorld().dropItem(sheep.getLocation(), wools);
+
+            ItemStack woolItem = new ItemStack(Material.WOOL, 1, sheep.getColor().getWoolData());
+
+            for (byte i = 0; i < ThreadLocalRandom.current().nextInt(1,4); i++) {
+                sheep.getWorld().dropItem(sheep.getLocation(), woolItem);
+            }
         }
     }
 }
