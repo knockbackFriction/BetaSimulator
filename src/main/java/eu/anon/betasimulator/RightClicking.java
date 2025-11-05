@@ -11,12 +11,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class RightClicking implements Listener {
-    private void setHealth(Player p, int health)
-    {
+    private void setHealth(Player p, int health) {
         double newHealth = Math.min(20, p.getHealth() + health);
         p.setHealth(newHealth);
         p.setFoodLevel(4);
     }
+
+    ItemStack nothing = new ItemStack(Material.AIR);
 
     @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
@@ -39,8 +40,6 @@ public class RightClicking implements Listener {
             ItemStack item = event.getItem();
             Material material = item.getType();
 
-            ItemStack nothing = new ItemStack(Material.AIR);
-
             switch (material) {
                 case PORK:
                     setHealth(p, 3);
@@ -48,6 +47,7 @@ public class RightClicking implements Listener {
                     p.getInventory().setItem(p.getInventory().getHeldItemSlot(), nothing);
                     break;
                 case BREAD:
+                case COOKED_FISH:
                     setHealth(p, 5);
                     event.setCancelled(true);
                     p.getInventory().setItem(p.getInventory().getHeldItemSlot(), nothing);
@@ -69,11 +69,6 @@ public class RightClicking implements Listener {
                     break;
                 case RAW_FISH:
                     setHealth(p, 2);
-                    event.setCancelled(true);
-                    p.getInventory().setItem(p.getInventory().getHeldItemSlot(), nothing);
-                    break;
-                case COOKED_FISH:
-                    setHealth(p, 5);
                     event.setCancelled(true);
                     p.getInventory().setItem(p.getInventory().getHeldItemSlot(), nothing);
                     break;
@@ -105,9 +100,9 @@ public class RightClicking implements Listener {
                     if (p.getInventory().contains(Material.ARROW)) {
                         Arrow arrow = p.launchProjectile(Arrow.class);
                         Vector vec = arrow.getVelocity();
-                        vec.setX( vec.getX()/1.7 );
-                        vec.setY( vec.getY()/1.7 );
-                        vec.setZ( vec.getZ()/1.7 );
+                        vec.setX( vec.getX()/1.5f );
+                        vec.setY( vec.getY()/1.5f );
+                        vec.setZ( vec.getZ()/1.5f );
                         arrow.setVelocity(vec);
                         ItemStack is = p.getInventory().getItem( p.getInventory().first(Material.ARROW) );
                         is.setAmount(is.getAmount()-1);

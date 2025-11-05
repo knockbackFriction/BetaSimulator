@@ -87,10 +87,6 @@ public class CraftingManager implements Listener {
                     itemMeta.setDisplayName(UUID.randomUUID().toString());
                     e.getInventory().getContents()[0].setItemMeta(itemMeta);
                     break;
-                case STEP:
-                case WOOD_STEP:
-                    e.getInventory().getContents()[0].setAmount(3);
-                    break;
                 case FENCE:
                     if (!allowModernFenceRecipe) {
                         for (ItemStack is : e.getInventory().getContents()) {
@@ -100,6 +96,13 @@ public class CraftingManager implements Listener {
                             }
                         }
                     }
+                    break;
+                case LADDER:
+                    e.getInventory().getContents()[0].setAmount(2);
+                    break;
+                case STEP:
+                case WOOD_STEP:
+                    e.getInventory().getContents()[0].setAmount(3);
                     break;
             }
         } else {
