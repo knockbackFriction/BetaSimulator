@@ -1,0 +1,6 @@
+simulate-b1-6-x: false
+allow-modern-fence-recipe: false
+player-knockback-vertical: 0.4
+player-knockback-horizontal: 0.4
+player-knockback-friction: 2.0
+player-knockback-limit-vertical: 0.4
