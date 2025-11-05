@@ -1,5 +1,6 @@
 package eu.anon.betasimulator;
 
+import eu.anon.betasimulator.mobs.MobLoot;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
