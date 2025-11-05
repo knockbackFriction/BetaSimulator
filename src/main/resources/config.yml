@@ -4,3 +4,4 @@ player-knockback-vertical: 0.4
 player-knockback-horizontal: 0.4
 player-knockback-friction: 2.0
 player-knockback-limit-vertical: 0.4
+barehand-damage-full-heart: true

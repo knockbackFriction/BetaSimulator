@@ -1,6 +1,7 @@
 package eu.anon.betasimulator;
 
 import eu.anon.betasimulator.mobs.*;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -37,6 +38,7 @@ public final class BetaSimulator extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new RightClicking(), this);
         getServer().getPluginManager().registerEvents(new Knockback(), this);
         getServer().getPluginManager().registerEvents(new CraftingManager(), this);
+        getServer().getPluginManager().registerEvents(new DamageChanger(), this);
 
         // add fence recipe (top)
         NamespacedKey fence_key = new NamespacedKey(this, "FENCE");
@@ -100,10 +102,15 @@ public final class BetaSimulator extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        event.setExpToDrop(0);
+
         if (configuration.simulate_b166 && event.getBlock().getType() == Material.TNT) {
             event.getBlock().setType(Material.AIR);
             event.setCancelled(true);
-            event.getBlock().getWorld().spawnEntity(event.getBlock().getLocation(), EntityType.PRIMED_TNT);
+
+            Location tntLoc = event.getBlock().getLocation();
+            tntLoc.add(0.5, 0.0, 0.5); // fixes TNT being off-center
+            event.getBlock().getWorld().spawnEntity(tntLoc, EntityType.PRIMED_TNT);
         }
     }
 

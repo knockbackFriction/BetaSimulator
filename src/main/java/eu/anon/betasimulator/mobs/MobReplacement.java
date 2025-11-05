@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class MobReplacement implements Listener {
     EntityType[] replacementHostiles = {EntityType.ZOMBIE, EntityType.SKELETON, EntityType.SPIDER, EntityType.CREEPER};
-    EntityType[] replacementPassives = {EntityType.PIG, EntityType.SHEEP, EntityType.COW, EntityType.CHICKEN};
+    EntityType[] replacementPassives = {EntityType.PIG, EntityType.SHEEP, EntityType.COW, EntityType.CHICKEN, EntityType.WOLF};
     ItemStack bow = new ItemStack(Material.BOW);
     Random random = new Random();
 

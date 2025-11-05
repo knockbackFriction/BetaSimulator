@@ -10,4 +10,5 @@ public class Configuration {
     public double playerKnockbackHorizontal = config.getDouble("player-knockback-horizontal");
     public double playerKnockbackFriction = config.getDouble("player-knockback-friction");
     public double playerKnockbackLimitVertical = config.getDouble("player-knockback-limit-vertical");
+    public boolean barehandDamageFullHeart = config.getBoolean("barehand-damage-full-heart");
 }
