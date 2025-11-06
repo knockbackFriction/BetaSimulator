@@ -1,7 +1,9 @@
 package eu.anon.betasimulator;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -12,6 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class RightClicking implements Listener {
     private void setHealth(Player p, int health) {
         double newHealth = Math.min(20, p.getHealth() + health);
@@ -21,7 +25,7 @@ public class RightClicking implements Listener {
 
     ItemStack nothing = new ItemStack(Material.AIR);
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onRightClick(PlayerInteractEvent event) {
         Action a = event.getAction();
         if (a == Action.LEFT_CLICK_AIR || a == Action.LEFT_CLICK_BLOCK) return;
@@ -129,6 +133,7 @@ public class RightClicking implements Listener {
     }
 
     public boolean doBoneMealAction(Block block){
+        Location blockLoc = block.getLocation();
         switch (block.getType()) {
             case CROPS:
                 block.setData((byte)7);
@@ -142,9 +147,39 @@ public class RightClicking implements Listener {
                 } else if (saplingData == 2) {
                     treeType = TreeType.BIRCH;
                 }
-                if (block.getWorld().generateTree(block.getLocation(), treeType)) {
+                if (block.getWorld().generateTree(blockLoc, treeType)) {
                     block.setType(Material.LOG);
                     block.setData(saplingData);
+                }
+                return true;
+            case GRASS:
+            case LONG_GRASS:
+                int startY;
+                if (blockLoc.getY() < 5) {
+                    startY = blockLoc.getBlockY();
+                } else {
+                    startY = blockLoc.getBlockY()-2;
+                }
+                World blockWorld = block.getWorld();
+                // sorry for reinventing the wheel
+                for (int x = blockLoc.getBlockX()-3; x < (blockLoc.getBlockX()+4); x++) {
+                    for (int z = blockLoc.getBlockZ()-3; z < (blockLoc.getBlockZ()+4); z++) {
+                        for (int y = startY; y < blockLoc.getBlockY() + 3; y++) {
+                            if (blockWorld.getBlockAt(x,y,z).getType() == Material.GRASS) {
+                                if (blockWorld.getBlockAt(x,y+1,z).getType() == Material.AIR) {
+                                    int rand = ThreadLocalRandom.current().nextInt(10);
+                                    if (rand > 4) {
+                                        blockWorld.getBlockAt(x,y+1,z).setType(Material.LONG_GRASS);
+                                        blockWorld.getBlockAt(x,y+1,z).setData((byte)1);
+                                    } else if (rand > 2) {
+                                        blockWorld.getBlockAt(x,y+1,z).setType(
+                                                ThreadLocalRandom.current().nextBoolean() ? Material.RED_ROSE : Material.YELLOW_FLOWER
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 return true;
         }
