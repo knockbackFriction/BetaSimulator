@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -12,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 public class DamageChanger implements Listener {
     boolean extraBaseDmg = BetaSimulator.instance.configuration.barehandDamageFullHeart;
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof LivingEntity) || !(event.getDamager() instanceof Player)) return;
         LivingEntity damager = (LivingEntity) event.getDamager();
@@ -50,7 +51,7 @@ public class DamageChanger implements Listener {
         event.setDamage(damage);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
@@ -123,7 +124,6 @@ public class DamageChanger implements Listener {
             }
         }
 
-        //we need to fix incompatibilities with the new sword and axe damages
         if (dmgReduction < 0.0f) {
             event.setDamage(
                     EntityDamageEvent.DamageModifier.ARMOR,

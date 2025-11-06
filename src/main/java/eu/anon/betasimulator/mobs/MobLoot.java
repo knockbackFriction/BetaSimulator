@@ -18,7 +18,7 @@ public class MobLoot implements Listener {
     public void onEntityDeath(EntityDeathEvent event) {
         event.setDroppedExp(0);
 
-        if (event.getEntityType()==EntityType.SQUID || event.getEntityType()==EntityType.SLIME) {
+        if (event.getEntityType()==EntityType.PLAYER || event.getEntityType()==EntityType.SQUID || event.getEntityType()==EntityType.SLIME) {
             return;
         }
         event.getDrops().clear();
