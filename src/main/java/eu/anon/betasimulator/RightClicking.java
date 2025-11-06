@@ -1,6 +1,8 @@
 package eu.anon.betasimulator;
 
 import org.bukkit.Material;
+import org.bukkit.TreeType;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -107,8 +109,46 @@ public class RightClicking implements Listener {
                         ItemStack is = p.getInventory().getItem( p.getInventory().first(Material.ARROW) );
                         is.setAmount(is.getAmount()-1);
                     }
+                    break;
+                case INK_SACK:
+                    if (item.getDurability() == (short)15 && event.hasBlock()) {
+                        event.setCancelled(true);
 
+                        if (doBoneMealAction(event.getClickedBlock())) {
+                            item = nothing;
+                            if (event.getItem().getAmount() > 1) {
+                                item = new ItemStack(event.getItem());
+                                item.setAmount(item.getAmount() - 1);
+                            }
+                            p.getInventory().setItem(p.getInventory().getHeldItemSlot(), item);
+                        }
+                    }
+                    break;
             }
         }
+    }
+
+    public boolean doBoneMealAction(Block block){
+        switch (block.getType()) {
+            case CROPS:
+                block.setData((byte)7);
+                return true;
+            case SAPLING:
+                TreeType treeType = TreeType.TREE;
+                byte saplingData = block.getData();
+                if (saplingData == 1) {
+                    treeType = TreeType.REDWOOD;
+                    block.setType(Material.AIR); // spruce tree does not want to generate if we do not do this
+                } else if (saplingData == 2) {
+                    treeType = TreeType.BIRCH;
+                }
+                if (block.getWorld().generateTree(block.getLocation(), treeType)) {
+                    block.setType(Material.LOG);
+                    block.setData(saplingData);
+                }
+                return true;
+        }
+
+        return false;
     }
 }
