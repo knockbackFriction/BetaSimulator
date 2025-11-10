@@ -153,7 +153,6 @@ public class RightClicking implements Listener {
                 }
                 return true;
             case GRASS:
-            case LONG_GRASS:
                 int startY;
                 if (blockLoc.getY() < 5) {
                     startY = blockLoc.getBlockY();
