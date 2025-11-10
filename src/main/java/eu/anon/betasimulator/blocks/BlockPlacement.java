@@ -54,6 +54,12 @@ public class BlockPlacement implements Listener {
             case DISPENSER:
                 if (event.getBlockPlaced().getData() > 1) return;
                 event.getBlockPlaced().setData(determineBlockFacing(event.getPlayer().getLocation().getYaw()));
+                break;
+            case STONE_BUTTON: // do not place top/bottom buttons
+                if (event.getBlockPlaced().getData() == 0 || event.getBlockPlaced().getData() == 5) {
+                    event.setCancelled(true);
+                }
+                break;
         }
     }
 }
