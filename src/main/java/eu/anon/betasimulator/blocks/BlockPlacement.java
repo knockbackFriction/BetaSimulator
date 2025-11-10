@@ -1,5 +1,6 @@
 package eu.anon.betasimulator.blocks;
 
+import eu.anon.betasimulator.BetaSimulator;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -7,6 +8,26 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockPlacement implements Listener {
+    private float wrapDegrees(float value) {
+        value = value % 360.0F;
+        if (value >= 180.0F) value -= 360.0F;
+        if (value < -180.0F) value += 360.0F;
+        return value;
+    }
+
+    private byte determineBlockFacing(float yaw) {
+        yaw = wrapDegrees(yaw);
+        if (yaw < -135.0f || yaw > 135.0f) {
+            return 3;
+        } else if (yaw > 45.0f) {
+            return 5;
+        } else if (yaw > -45.0f) {
+            return 2;
+        } else {
+            return 4;
+        }
+    }
+
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Material mat = event.getBlock().getType();
@@ -30,6 +51,9 @@ public class BlockPlacement implements Listener {
                     event.setCancelled(true);
                 }
                 break;
+            case DISPENSER:
+                if (event.getBlockPlaced().getData() > 1) return;
+                event.getBlockPlaced().setData(determineBlockFacing(event.getPlayer().getLocation().getYaw()));
         }
     }
 }
