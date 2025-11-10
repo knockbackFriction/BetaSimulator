@@ -14,10 +14,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -92,7 +95,12 @@ public final class BetaSimulator extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
-        e.getPlayer().setFoodLevel(4);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                e.getPlayer().setFoodLevel(4);
+            }
+        }.runTaskLater(this, 1);
     }
 
     @EventHandler
@@ -118,14 +126,25 @@ public final class BetaSimulator extends JavaPlugin implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Material mat = event.getBlock().getType();
         switch (mat) {
-            case WOOD_STEP:
+            case WOOD_STEP: // slabs can only be at the bottom half of the block
                 event.getBlock().setData((byte) 0);
                 break;
-            case STEP:
+            case STEP: // slabs can only be at the bottom half of the block
                 byte dataValue = event.getBlock().getData();
                 if (dataValue > 3) {
                     event.getBlock().setData((byte) (dataValue % 4));
                 }
+                break;
+            case SUGAR_CANE_BLOCK:
+                Location sugarLoc = event.getBlock().getLocation();
+                int x = sugarLoc.getBlockX();
+                int supportBlock = sugarLoc.getBlockY() - 1;
+                int z = sugarLoc.getBlockZ();
+                // sugar canes can not be placed on sand
+                if (sugarLoc.getBlockY() == 0 || event.getBlock().getWorld().getBlockAt( x, supportBlock, z ).getType() == Material.SAND) {
+                    event.setCancelled(true);
+                }
+                break;
         }
     }
 

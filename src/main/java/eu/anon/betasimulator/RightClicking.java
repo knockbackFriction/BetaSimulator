@@ -25,7 +25,7 @@ public class RightClicking implements Listener {
 
     ItemStack nothing = new ItemStack(Material.AIR);
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
         Action a = event.getAction();
         if (a == Action.LEFT_CLICK_AIR || a == Action.LEFT_CLICK_BLOCK) return;
@@ -168,10 +168,10 @@ public class RightClicking implements Listener {
                             if (blockWorld.getBlockAt(x,y,z).getType() == Material.GRASS) {
                                 if (blockWorld.getBlockAt(x,y+1,z).getType() == Material.AIR) {
                                     int rand = ThreadLocalRandom.current().nextInt(10);
-                                    if (rand > 4) {
+                                    if (rand > 5) {
                                         blockWorld.getBlockAt(x,y+1,z).setType(Material.LONG_GRASS);
                                         blockWorld.getBlockAt(x,y+1,z).setData((byte)1);
-                                    } else if (rand > 2) {
+                                    } else if (rand > 3) {
                                         blockWorld.getBlockAt(x,y+1,z).setType(
                                                 ThreadLocalRandom.current().nextBoolean() ? Material.RED_ROSE : Material.YELLOW_FLOWER
                                         );
