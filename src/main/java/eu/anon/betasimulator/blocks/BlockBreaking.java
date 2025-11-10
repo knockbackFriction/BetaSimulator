@@ -7,6 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -33,14 +34,30 @@ public class BlockBreaking implements Listener {
                 event.getBlock().getWorld().spawnEntity(centerLocation(tntLoc), EntityType.PRIMED_TNT);
                 break;
             case LEAVES: // Apples do not drop in Beta
+                byte saplingType = (byte) ((event.getBlock().getData()+1) % 3);
+
                 if (ThreadLocalRandom.current().nextInt(20) == 1) {
                     event.getBlock().getWorld().dropItem(
                             centerLocation(event.getBlock().getLocation()),
-                            new ItemStack(Material.SAPLING)
+                            new ItemStack(Material.SAPLING, 1, (short) 0, saplingType)
                     );
                 }
                 event.setDropItems(false);
                 break;
         }
+    }
+
+    @EventHandler
+    public void onLeavesDecay(LeavesDecayEvent event) { // Apples do not drop in Beta
+        byte saplingType = (byte) ((event.getBlock().getData()+1) % 3);
+
+        if (ThreadLocalRandom.current().nextInt(20) == 1) {
+            event.getBlock().getWorld().dropItem(
+                    centerLocation(event.getBlock().getLocation()),
+                    new ItemStack(Material.SAPLING, 1, (short) 0, saplingType)
+            );
+        }
+        event.setCancelled(true);
+        event.getBlock().setType(Material.AIR);
     }
 }
