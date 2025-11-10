@@ -34,7 +34,7 @@ public class BlockBreaking implements Listener {
                 event.getBlock().getWorld().spawnEntity(centerLocation(tntLoc), EntityType.PRIMED_TNT);
                 break;
             case LEAVES: // Apples do not drop in Beta
-                byte saplingType = (byte) ((event.getBlock().getData()+1) % 3);
+                byte saplingType = (byte) (event.getBlock().getData() % 4);
 
                 if (ThreadLocalRandom.current().nextInt(20) == 1) {
                     event.getBlock().getWorld().dropItem(
@@ -49,7 +49,7 @@ public class BlockBreaking implements Listener {
 
     @EventHandler
     public void onLeavesDecay(LeavesDecayEvent event) { // Apples do not drop in Beta
-        byte saplingType = (byte) ((event.getBlock().getData()+1) % 3);
+        byte saplingType = (byte) (event.getBlock().getData() % 4);
 
         if (ThreadLocalRandom.current().nextInt(20) == 1) {
             event.getBlock().getWorld().dropItem(
