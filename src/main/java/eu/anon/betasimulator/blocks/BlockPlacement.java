@@ -2,6 +2,8 @@ package eu.anon.betasimulator.blocks;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -25,6 +27,25 @@ public class BlockPlacement implements Listener {
         } else {
             return 4;
         }
+    }
+
+    private boolean hasASolidNeighbour(Block block) {
+        World w = block.getWorld();
+        Location l = block.getLocation();
+
+        l.add(0,0,-1);
+        Material north = w.getBlockAt(l).getType();
+        l.add(0,0,2);
+        Material south = w.getBlockAt(l).getType();
+        l.add(-1,0,-1);
+        Material west = w.getBlockAt(l).getType();
+        l.add(2,0,0);
+        Material east = w.getBlockAt(l).getType();
+
+        if (north.isSolid() && north.isOccluding()) return true;
+        if (south.isSolid() && south.isOccluding()) return true;
+        if (west.isSolid() && west.isOccluding()) return true;
+        return east.isSolid() && east.isOccluding();
     }
 
     @EventHandler
@@ -68,9 +89,14 @@ public class BlockPlacement implements Listener {
                 break;
             case FENCE:
                 Location fenceLoc = event.getBlock().getLocation();
-                // fences can not be placed in the air
-                if (fenceLoc.getBlockY() == 0 || event.getBlock().getWorld().getBlockAt(
-                        fenceLoc.getBlockX(), fenceLoc.getBlockY() - 1, fenceLoc.getBlockZ()).getType() == Material.AIR) {
+                // fences can not be placed on non-solid blocks
+                if (fenceLoc.getBlockY() == 0 || !event.getBlock().getWorld().getBlockAt(
+                        fenceLoc.getBlockX(), fenceLoc.getBlockY() - 1, fenceLoc.getBlockZ()).getType().isSolid()) {
+                    event.setCancelled(true);
+                }
+                break;
+            case TRAP_DOOR:
+                if ( !hasASolidNeighbour(event.getBlock()) ) {
                     event.setCancelled(true);
                 }
                 break;
