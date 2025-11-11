@@ -1,6 +1,5 @@
 package eu.anon.betasimulator.blocks;
 
-import eu.anon.betasimulator.BetaSimulator;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -30,13 +29,14 @@ public class BlockPlacement implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        byte dataValue;
         Material mat = event.getBlock().getType();
         switch (mat) {
             case WOOD_STEP: // slabs can only be at the bottom half of the block
                 event.getBlock().setData((byte) 0);
                 break;
             case STEP: // slabs can only be at the bottom half of the block
-                byte dataValue = event.getBlock().getData();
+                dataValue = event.getBlock().getData();
                 if (dataValue > 3) {
                     event.getBlock().setData((byte) (dataValue % 4));
                 }
@@ -57,6 +57,20 @@ public class BlockPlacement implements Listener {
                 break;
             case STONE_BUTTON: // do not place top/bottom buttons
                 if (event.getBlockPlaced().getData() == 0 || event.getBlockPlaced().getData() == 5) {
+                    event.setCancelled(true);
+                }
+                break;
+            case LEVER:
+                dataValue = event.getBlock().getData();
+                if (dataValue == 0 || dataValue == 7 || dataValue == 8 || dataValue == 15) {
+                    event.setCancelled(true);
+                }
+                break;
+            case FENCE:
+                Location fenceLoc = event.getBlock().getLocation();
+                // fences can not be placed in the air
+                if (fenceLoc.getBlockY() == 0 || event.getBlock().getWorld().getBlockAt(
+                        fenceLoc.getBlockX(), fenceLoc.getBlockY() - 1, fenceLoc.getBlockZ()).getType() == Material.AIR) {
                     event.setCancelled(true);
                 }
                 break;
