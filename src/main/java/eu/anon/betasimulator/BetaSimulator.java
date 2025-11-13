@@ -7,11 +7,13 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -119,6 +121,18 @@ public final class BetaSimulator extends JavaPlugin implements Listener {
             for (byte i = 0; i < ThreadLocalRandom.current().nextInt(1,4); i++) {
                 sheep.getWorld().dropItem(sheep.getLocation(), woolItem);
             }
+        }
+    }
+
+    ItemStack rawFish = new ItemStack(Material.RAW_FISH);
+
+    @EventHandler
+    public void onFish(PlayerFishEvent event) {
+        event.setExpToDrop(0);
+        if (event.getCaught() == null) return;
+        if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item) {
+            Item caughtItem = (Item) (event.getCaught());
+            caughtItem.setItemStack(rawFish);
         }
     }
 }

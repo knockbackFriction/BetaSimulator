@@ -32,20 +32,23 @@ public class BlockPlacement implements Listener {
     private boolean hasASolidNeighbour(Block block) {
         World w = block.getWorld();
         Location l = block.getLocation();
+        Material neighbour;
 
         l.add(0,0,-1);
-        Material north = w.getBlockAt(l).getType();
-        l.add(0,0,2);
-        Material south = w.getBlockAt(l).getType();
-        l.add(-1,0,-1);
-        Material west = w.getBlockAt(l).getType();
-        l.add(2,0,0);
-        Material east = w.getBlockAt(l).getType();
+        neighbour = w.getBlockAt(l).getType();
+        if (neighbour.isSolid() && neighbour.isOccluding()) return true;
 
-        if (north.isSolid() && north.isOccluding()) return true;
-        if (south.isSolid() && south.isOccluding()) return true;
-        if (west.isSolid() && west.isOccluding()) return true;
-        return east.isSolid() && east.isOccluding();
+        l.add(0,0,2);
+        neighbour = w.getBlockAt(l).getType();
+        if (neighbour.isSolid() && neighbour.isOccluding()) return true;
+
+        l.add(-1,0,-1);
+        neighbour = w.getBlockAt(l).getType();
+        if (neighbour.isSolid() && neighbour.isOccluding()) return true;
+
+        l.add(2,0,0);
+        neighbour = w.getBlockAt(l).getType();
+        return neighbour.isSolid() && neighbour.isOccluding();
     }
 
     @EventHandler
