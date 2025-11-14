@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,6 +48,12 @@ public class MobReplacement implements Listener {
             case BAT:
                 event.setCancelled(true);
                 break;
+            case WITHER_SKELETON:
+            case MAGMA_CUBE:
+                loc = event.getLocation();
+                event.setCancelled(true);
+                loc.getWorld().spawnEntity(loc, EntityType.PIG_ZOMBIE);
+                break;
             // Below are valid mobs, but their equipment among other things have to be changed
             case SKELETON:
                 livingEntity = (LivingEntity) event.getEntity();
@@ -67,6 +74,13 @@ public class MobReplacement implements Listener {
             case CHICKEN:
                 livingEntity = (LivingEntity) event.getEntity();
                 livingEntity.getPassengers().clear();
+                break;
+            case PIG_ZOMBIE:
+                livingEntity = (LivingEntity) event.getEntity();
+                livingEntity.getEquipment().clear();
+                PigZombie pigZombieEntity = (PigZombie) livingEntity;
+                pigZombieEntity.setBaby(false);
+                break;
         }
     }
 }

@@ -20,6 +20,8 @@ public class BlockBreaking implements Listener {
         return l;
     }
 
+    ItemStack netherrack = new ItemStack(Material.NETHERRACK, 1);
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         event.setExpToDrop(0);
@@ -42,6 +44,16 @@ public class BlockBreaking implements Listener {
                             new ItemStack(Material.SAPLING, 1, (short) 0, saplingType)
                     );
                 }
+                event.setDropItems(false);
+                break;
+            // Below is not by any means an extensive list of Nether related blocks
+            // Make sure to find a way to not generate newer Nether features, including Fortresses!
+            case QUARTZ_ORE:
+            case MAGMA:
+                event.getBlock().getWorld().dropItem(
+                        centerLocation(event.getBlock().getLocation()),
+                        netherrack
+                );
                 event.setDropItems(false);
                 break;
         }
