@@ -2,10 +2,7 @@ package eu.anon.betasimulator;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.FishHook;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -27,15 +24,14 @@ public class Fishing implements Listener {
         velo.setY(0.4f);
         velo.setZ((velo.getZ() / 2.0f) - finalZ);
 
-        if (velo.getY() > 1.0f) {
-            velo.setY(1.0f);
-        }
         return velo;
     }
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
         if (!(event.getHitEntity() instanceof LivingEntity)) return;
+        if (event.getHitEntity() instanceof Player) return; //might add config entry to allow rods to work on players
+
         if (!(event.getEntity() instanceof FishHook)) return;
         if (!(event.getEntity().getShooter() instanceof Player)) return;
 
@@ -53,10 +49,20 @@ public class Fishing implements Listener {
 
         switch (event.getState()) {
             case CAUGHT_ENTITY:
-                if (event.getCaught() instanceof Item || !(event.getCaught() instanceof LivingEntity)) {
+                if (event.getCaught() instanceof Player || event.getCaught() instanceof Item || !(event.getCaught() instanceof LivingEntity)) {
                     event.setCancelled(true);
                     event.getHook().remove();
                     return;
+                } else {
+                    if (!(event.getHook().getShooter() instanceof Player)) return;
+                    Player shooter = (Player) event.getHook().getShooter();
+                    Entity caught = event.getCaught();
+                    float heightDiff = (float) (shooter.getLocation().getY() - caught.getLocation().getY()) / 24f;
+                    if (heightDiff < 0.0f) return;
+
+                    Vector vector = caught.getVelocity();
+                    vector.setY(heightDiff);
+                    caught.setVelocity(vector);
                 }
                 break;
             case CAUGHT_FISH:
