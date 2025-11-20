@@ -9,6 +9,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -16,6 +18,8 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -119,6 +123,36 @@ public final class BetaSimulator extends JavaPlugin implements Listener {
             for (byte i = 0; i < ThreadLocalRandom.current().nextInt(1,4); i++) {
                 sheep.getWorld().dropItem(sheep.getLocation(), woolItem);
             }
+        }
+    }
+
+    @EventHandler
+    public void onEntityBreed(EntityBreedEvent event) {
+        event.setCancelled(true);
+    }
+
+    PotionEffect artificialBoost = new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 1);
+
+    private boolean isSword(Material mat) {
+        switch (mat) {
+            case DIAMOND_SWORD:
+            case STONE_SWORD:
+            case GOLD_SWORD:
+            case IRON_SWORD:
+            case WOOD_SWORD:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @EventHandler
+    public void onBlockDamage(BlockDamageEvent event) {
+        /* Beta 1.7 breaks some blocks faster with sword,
+        so, to prevent the server from cancelling block breaking because the player breaks the block too fast,
+        we give the player a temporary haste effect */
+        if (isSword(event.getItemInHand().getType())) {
+            event.getPlayer().addPotionEffect(artificialBoost);
         }
     }
 }

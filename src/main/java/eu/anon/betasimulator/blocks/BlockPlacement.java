@@ -57,7 +57,7 @@ public class BlockPlacement implements Listener {
             event.setCancelled(true);
             return;
         }
-        
+
         byte dataValue;
         Material mat = event.getBlock().getType();
         switch (mat) {

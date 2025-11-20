@@ -93,10 +93,10 @@ public class RightClicking implements Listener {
                     event.setCancelled(true);
                     p.getInventory().setItem(p.getInventory().getHeldItemSlot(), item);
                     break;
-                case STRING:
+                case STRING: // string placement
                 case STONE_SPADE:
                 case GOLD_SPADE:
-                case DIAMOND_SPADE:
+                case DIAMOND_SPADE: // grass path
                 case IRON_SPADE:
                 case WOOD_SPADE:
                     event.setCancelled(true);

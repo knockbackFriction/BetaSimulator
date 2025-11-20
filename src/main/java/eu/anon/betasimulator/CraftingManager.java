@@ -54,7 +54,10 @@ public class CraftingManager implements Listener {
     @EventHandler
     public void craftItem(PrepareItemCraftEvent e) {
         if (e.getRecipe() == null) return;
-        if (e.isRepair()) return;
+        if (e.isRepair()) {
+            e.getInventory().setResult(nothing);
+            return;
+        }
 
         Material itemResult = e.getRecipe().getResult().getType();
         ItemMeta itemMeta;
