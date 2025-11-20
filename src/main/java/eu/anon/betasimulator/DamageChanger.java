@@ -11,6 +11,48 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class DamageChanger implements Listener {
+    private short getMaxDurability(Material mat) {
+        switch (mat) {
+            case LEATHER_BOOTS:
+                return 65;
+            case LEATHER_CHESTPLATE:
+                return 80;
+            case LEATHER_HELMET:
+                return 55;
+            case LEATHER_LEGGINGS:
+                return 75;
+            case CHAINMAIL_BOOTS:
+            case IRON_BOOTS:
+                return 195;
+            case CHAINMAIL_CHESTPLATE:
+            case IRON_CHESTPLATE:
+                return 240;
+            case CHAINMAIL_HELMET:
+            case IRON_HELMET:
+                return 165;
+            case CHAINMAIL_LEGGINGS:
+            case IRON_LEGGINGS:
+                return 225;
+            case GOLD_BOOTS:
+                return 91;
+            case GOLD_CHESTPLATE:
+                return 112;
+            case GOLD_HELMET:
+                return 77;
+            case GOLD_LEGGINGS:
+                return 105;
+            case DIAMOND_BOOTS:
+                return 429;
+            case DIAMOND_CHESTPLATE:
+                return 528;
+            case DIAMOND_HELMET:
+                return 363;
+            case DIAMOND_LEGGINGS:
+                return 495;
+        }
+        return -1;
+    }
+
     boolean extraBaseDmg = BetaSimulator.instance.configuration.barehandDamageFullHeart;
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -61,71 +103,32 @@ public class DamageChanger implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
 
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            double dmg = event.getDamage();
+
+            for (ItemStack armorPiece : player.getEquipment().getArmorContents()) {
+                if (armorPiece != null) {
+                    if ( (getMaxDurability(armorPiece.getType()) - armorPiece.getDurability()) - dmg > 0) {
+                        armorPiece.setDurability( (short) (armorPiece.getDurability() + dmg) );
+                    } else {
+                        armorPiece.setAmount(0);
+                    }
+                }
+            }
+        }
+
         float dmgReduction = 0.0f;
 
         for (ItemStack armorPiece : player.getEquipment().getArmorContents()) {
             short maxDura = -1;
 
             if (armorPiece != null) {
-                switch (armorPiece.getType()) {
-                    case LEATHER_BOOTS:
-                        maxDura = 65;
-                        break;
-                    case LEATHER_CHESTPLATE:
-                        maxDura = 80;
-                        break;
-                    case LEATHER_HELMET:
-                        maxDura = 55;
-                        break;
-                    case LEATHER_LEGGINGS:
-                        maxDura = 75;
-                        break;
-                    case CHAINMAIL_BOOTS:
-                    case IRON_BOOTS:
-                        maxDura = 195;
-                        break;
-                    case CHAINMAIL_CHESTPLATE:
-                    case IRON_CHESTPLATE:
-                        maxDura = 240;
-                        break;
-                    case CHAINMAIL_HELMET:
-                    case IRON_HELMET:
-                        maxDura = 165;
-                        break;
-                    case CHAINMAIL_LEGGINGS:
-                    case IRON_LEGGINGS:
-                        maxDura = 225;
-                        break;
-                    case GOLD_BOOTS:
-                        maxDura = 91;
-                        break;
-                    case GOLD_CHESTPLATE:
-                        maxDura = 112;
-                        break;
-                    case GOLD_HELMET:
-                        maxDura = 77;
-                        break;
-                    case GOLD_LEGGINGS:
-                        maxDura = 105;
-                        break;
-                    case DIAMOND_BOOTS:
-                        maxDura = 429;
-                        break;
-                    case DIAMOND_CHESTPLATE:
-                        maxDura = 528;
-                        break;
-                    case DIAMOND_HELMET:
-                        maxDura = 363;
-                        break;
-                    case DIAMOND_LEGGINGS:
-                        maxDura = 495;
-                        break;
-                }
+                maxDura = getMaxDurability(armorPiece.getType());
             }
 
             if (maxDura != -1) {
                 short dura = armorPiece.getDurability();
-                dmgReduction += ( (float) (maxDura - dura) / (float) maxDura ) * -0.25f;
+                dmgReduction += ( (float) (maxDura - dura) / (float) maxDura ) * -0.24f;
             }
         }
 
