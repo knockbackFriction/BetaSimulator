@@ -53,6 +53,11 @@ public class BlockPlacement implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        if (event.getBlockPlaced().getLocation().getBlockY() > 127) {
+            event.setCancelled(true);
+            return;
+        }
+        
         byte dataValue;
         Material mat = event.getBlock().getType();
         switch (mat) {
@@ -98,7 +103,7 @@ public class BlockPlacement implements Listener {
                     event.setCancelled(true);
                 }
                 break;
-            case TRAP_DOOR:
+            case TRAP_DOOR: // this does not fully prevent illegal trapdoor placements
                 if ( !hasASolidNeighbour(event.getBlock()) ) {
                     event.setCancelled(true);
                 }
