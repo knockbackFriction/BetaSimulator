@@ -13,42 +13,45 @@ import org.bukkit.inventory.ItemStack;
 public class DamageChanger implements Listener {
     private short getMaxDurability(Material mat) {
         switch (mat) {
-            case LEATHER_BOOTS:
-                return 65;
-            case LEATHER_CHESTPLATE:
-                return 80;
             case LEATHER_HELMET:
-                return 55;
+                return 11 * 3;
+            case LEATHER_CHESTPLATE:
+                return 16 * 3;
             case LEATHER_LEGGINGS:
-                return 75;
-            case CHAINMAIL_BOOTS:
-            case IRON_BOOTS:
-                return 195;
-            case CHAINMAIL_CHESTPLATE:
-            case IRON_CHESTPLATE:
-                return 240;
-            case CHAINMAIL_HELMET:
-            case IRON_HELMET:
-                return 165;
-            case CHAINMAIL_LEGGINGS:
-            case IRON_LEGGINGS:
-                return 225;
-            case GOLD_BOOTS:
-                return 91;
-            case GOLD_CHESTPLATE:
-                return 112;
+                return 15 * 3;
+            case LEATHER_BOOTS:
+                return 13 * 3;
+
             case GOLD_HELMET:
-                return 77;
+            case CHAINMAIL_HELMET:
+                return 11 * 3 << 1;
+            case GOLD_CHESTPLATE:
+            case CHAINMAIL_CHESTPLATE:
+                return 16 * 3 << 1;
             case GOLD_LEGGINGS:
-                return 105;
-            case DIAMOND_BOOTS:
-                return 429;
-            case DIAMOND_CHESTPLATE:
-                return 528;
+            case CHAINMAIL_LEGGINGS:
+                return 15 * 3 << 1;
+            case GOLD_BOOTS:
+            case CHAINMAIL_BOOTS:
+                return 13 * 3 << 1;
+
+            case IRON_HELMET:
+                return 11 * 3 << 2;
+            case IRON_CHESTPLATE:
+                return 16 * 3 << 2;
+            case IRON_LEGGINGS:
+                return 15 * 3 << 2;
+            case IRON_BOOTS:
+                return 13 * 3 << 2;
+
             case DIAMOND_HELMET:
-                return 363;
+                return 11 * 3 << 3;
+            case DIAMOND_CHESTPLATE:
+                return 16 * 3 << 3;
             case DIAMOND_LEGGINGS:
-                return 495;
+                return 15 * 3 << 3;
+            case DIAMOND_BOOTS:
+                return 13 * 3 << 3;
         }
         return -1;
     }
